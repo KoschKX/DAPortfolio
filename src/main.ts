@@ -1,6 +1,31 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { AppComponent } from './app/app.component';
+import { AppComponent, HttpLoaderFactory } from './app/app.component';
+import { provideHttpClient, HttpClient } from '@angular/common/http';
+import { provideRouter, Routes } from '@angular/router';
+import { importProvidersFrom } from '@angular/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+// Import your main routed component
+import { MainContentComponent } from './app/main-content/main-content';
+
+// Define your routes
+const routes: Routes = [
+  { path: '', component: MainContentComponent },
+  // Add more routes as needed
+];
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(),
+    provideRouter(routes),
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+        }
+      })
+    )
+  ]
+});
